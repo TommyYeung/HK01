@@ -1,0 +1,39 @@
+<h1>Survey Analysis</h1>
+<button type="button" class="btn btn1"  (click)="genPieChart(dataLength)">Pie</button>
+<button type="button" class="btn btn1"  (click)="add()">Add</button>
+<button type="button" class="btn btn1"  (click)="delete(d)">Del</button>
+<button type="button" class="btn btn1"  (click)="chartDel()">test</button>
+<button type="button" class="btn btn1"  (click)="gen(x)">PPPPPP</button>
+
+<div [hidden]=display>
+  <div  style="height: 200px;width:200px;" *ngFor="let a of dataLength2;index as i; trackBy:trackByFn">
+    <!-- trackBy:trackByFn -->
+    <canvas attr.id="canvas-{{i}}" height="100"
+    width="100" ></canvas>
+    <!-- (click)="myDrawingFunction(i)" -->
+  </div>
+</div>
+
+
+
+
+
+<!-- <div style="width: 800px">
+  <canvas id="myChart2"></canvas>
+</div> -->
+
+<!-- <div style="width: 800px">
+  <canvas id=myChart2></canvas>
+</div> -->
+
+<!-- <div *ngFor="let day of  dataArray1;let i=index;"> -->
+
+  <!-- <label>Question </label><br> -->
+<!-- </div> -->
+
+
+
+
+
+
+

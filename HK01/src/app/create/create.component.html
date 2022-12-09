@@ -1,0 +1,170 @@
+<div class="Create">
+
+  <form [hidden]=displayFormArea [formGroup]="surveyForm" (ngSubmit)="add()" class="createform">
+    <h1 class="Lh1">{{editMode?'Edit Survey':'Create Survey'}}</h1>
+
+
+    <!-- <div class="form-group" [hidden]="true">
+      <label>id</label>
+      <input formControlName="_id" type="text" class="form-contol">
+    </div><br> -->
+    <div class="form-group">
+      <label>Name</label>
+      <input formControlName="name" type="text" name="name" class="form-contol">
+    </div><br>
+    <div class="form-group">
+      <label>Author</label>
+      <input formControlName="author" type="text" required name="author" class="form-contol">
+    </div><br>
+    <div class="form-group">
+      <label>Start Date</label>
+      <input formControlName="startDate" required type="datetime-local" required name="startDate" class="form-contol">
+    </div><br>
+    <div class="form-group">
+      <label>End Date</label>
+      <input formControlName="endDate" required type="datetime-local" required name="endDate" class="form-contol">
+    </div><br>
+    <hr>
+    <!-- ------------------------Question------Start---------------------------------------------------------------------------------------- -->
+    <div class="form-group">
+      <label>Question</label><br>
+      <button type="button" class="btn btn-secondary btn-sm m-2" (click)="addItem()">Add</button><br>
+      <div formArrayName="questions">
+        <div *ngFor="let question of questions.controls;let i=index;" [formGroupName]="i">
+          <label>Question {{i+1}}</label><br>
+          <input type="text" class="form-contol my-1" required name="question" formControlName="question">
+          <button type="button" class="btn btn-secondary btn-sm m-2" (click)="onDeleteItem(i)">Delete</button>
+          <br>
+
+          <div *ngIf="typeArray[i]" class="MCQ">
+            <label class="form-label"></label>
+            <input type="text" class="form-control" required name="MCAns-{{i}}-1" placeholder="Option 1"
+              formControlName="option1">
+            <label class="form-label"></label>
+            <input type="text" class="form-control" required name="MCAns-{{i}}-2" placeholder="Option 2"
+              formControlName="option2">
+            <label class="form-label"></label>
+            <input type="text" class="form-control" required name="MCAns-{{i}}-3" placeholder="Option 3"
+              formControlName="option3">
+            <label class="form-label"></label>
+            <input type="text" class="form-control" required name="MCAns-{{i}}-4" placeholder="Option 4"
+              formControlName="option4"><br>
+          </div>
+
+
+          <button type="button" class="btn btn-secondary btn-sm m-2" (click)="SQ(i)">SQ</button>
+          <button type="button" class="btn btn-secondary btn-sm m-2" (click)="MC(i)">MC</button>
+          <div class="form-group" [hidden]="true">
+            <label hidden>Type</label>
+            <input formControlName="type" type="text" class="form-contol">
+          </div>
+
+
+
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------------Question--------End--------------------------------------------------------------------------------------- -->
+    <div class="bcenter">
+      <div class="btns">
+        <input type="submit" class="btn btn1" [disabled]="surveyForm.invalid"
+          value="{{editMode?'Update Survey':'Add Survey'}}">
+        <!-- <button type="button" class="btn btn1"  (click)="updateTask(this.currentId)">Update</button> -->
+        <button type="button" class="btn btn1" (click)="cancel()">Cancel</button>
+
+      </div>
+    </div>
+  </form>
+</div>
+
+
+
+<div class="surveylist">
+  <h1 class="surh1">Survey List</h1>
+
+  <button type="button" class="btn btn1" (click)="showFormArea()">Create New Form</button>
+
+
+  <table>
+    <tr>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th colspan="3">Action</th>
+    </tr>
+
+    <tr *ngFor="let survey  of surveys">
+      <td>{{survey.name}}</td>
+      <td>{{survey.author}}</td>
+      <td>{{survey.startDate|date}}</td>
+      <td>{{survey.endDate|date}}</td>
+      <td>
+        <div class="btns"><button type="button" class="btn btn1" (click)="getSurveyData(survey._id,position)">Analysis</button>
+        </div>
+      </td>
+      <!-- <td><div class="btns"><button type="button" class="btn btn1" (click)="getSurveyData2(survey._id)">Analysis2</button></div></td> -->
+      <td>
+        <div class="btns"><button type="button" class="btn btn1" (click)="onEditClicked(survey._id)">Edit</button></div>
+      </td>
+      <td>
+        <div class="btns"><button type="button" class="btn btn1" (click)="onDeleteClicked(survey._id)">Delete</button>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+
+
+
+
+</div>
+<!-- <button type="button" class="btn btn1"  (click)=" checkdelete()">Delete</button> -->
+
+<div #position></div>
+<div >
+  <div [hidden]=hiddenButton>
+    <input type="button" value="Download PDF" class="btn btn-success"
+      (click)="savePDF()">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button type="button" class="btn btn1" (click)="hideResult()">Hide Analysis Result</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+  </div>
+  <div class="container" [hidden]=hiddenButton id="exportContent" #content>
+    <h3>Survey Title: {{surveyTitle}}</h3>
+    <h3>Total Number of Response: {{numberOfResponses}}</h3>
+    <table [hidden]=checkAnyResponseDate class="resultTable">
+      <tr>
+        <th>Question No. </th>
+        <th>A/Response</th>
+        <th>B/No Response</th>
+        <th>C</th>
+        <th>D</th>
+      </tr>
+
+      <!--survey data table -->
+      <tr *ngFor="let a of arr;index as i; ">
+        <td>Question No. {{i+1}}</td>
+        <td>{{arr[i].datesArray[0]}}</td>
+        <td>{{arr[i].datesArray[1]}}</td>
+        <td>{{arr[i].datesArray[2]}}</td>
+        <td>{{arr[i].datesArray[3]}}</td>
+      </tr>
+    </table>
+
+
+    <div *ngFor="let a of canvasLength;index as i; ">
+      <div [hidden]=canvasControl[i] style="height: 800px;width:600px;">
+        <canvas attr.id="canvas-{{i}}" height="100" width="100"></canvas>
+
+
+
+    </div>
+  </div>
+  <button type="button" class="btn btn1" (click)="backToTheTop()">Back To The Top</button>
+  </div>
+</div>
+
